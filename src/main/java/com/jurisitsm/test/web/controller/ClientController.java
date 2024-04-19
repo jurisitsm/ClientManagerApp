@@ -5,6 +5,7 @@ import com.jurisitsm.test.service.ClientService;
 import com.jurisitsm.test.web.dto.ClientRequest;
 import com.jurisitsm.test.web.dto.ClientResponse;
 import com.jurisitsm.test.web.dto.ClientUpdateRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,7 +51,7 @@ public class ClientController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createClient(@RequestBody ClientRequest clientRequest) {
+    public ResponseEntity<Void> createClient(@RequestBody @Valid ClientRequest clientRequest) {
         clientService.createClient(clientRequest);
         return ResponseEntity.ok().build();
     }

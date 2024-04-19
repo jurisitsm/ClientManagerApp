@@ -8,5 +8,5 @@ import java.time.LocalDate;
 public record ClientRequest(
         @NotBlank String name,
         @NotBlank @Email String email,
-        @NotBlank LocalDate dateOfBirth
+        LocalDate dateOfBirth
 ){}

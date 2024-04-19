@@ -45,7 +45,7 @@ public class ClientControllerIntegrationTest {
     public void setup() {
         clientRepository.deleteAll();
         client = new Client("testclient@example.com", "Test Client",
-                LocalDate.of(1990, 1, 1));
+                LocalDate.now().minusYears(55));
         clientRepository.save(client);
     }
 
@@ -72,12 +72,22 @@ public class ClientControllerIntegrationTest {
 
     @Test
     public void testCreateClient() throws Exception {
-        ClientRequest clientRequest = new ClientRequest("newclient@example.com", "New Client",
+        ClientRequest clientRequest = new ClientRequest("new client", "newclient@example.com",
                 LocalDate.of(2000, 5, 15));
         mockMvc.perform(post("/client")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(clientRequest)))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testCreateClientWithInvalidEmail() throws Exception {
+        ClientRequest clientRequest = new ClientRequest("newclient", "invalid email",
+                LocalDate.of(2000, 5, 15));
+        mockMvc.perform(post("/client")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(clientRequest)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -92,16 +102,29 @@ public class ClientControllerIntegrationTest {
 
     @Test
     public void testGetAverageAgeOfClients() throws Exception {
+        Client youngClient = new Client("young@example.com", "Young Client", LocalDate.now().minusYears(10));
+        Client oldClient = new Client("old@example.com", "Old Client", LocalDate.now().minusYears(50));
+        clientRepository.save(youngClient);
+        clientRepository.save(oldClient);
+
         mockMvc.perform(get("/client/average"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isNumber());
+                .andExpect(jsonPath("$").value(38));
     }
 
     @Test
     public void testGetClientsInAgeRange() throws Exception {
+        Client client15 = new Client("client18@example.com", "Client Age 15", LocalDate.now().minusYears(15));
+        Client client25 = new Client("client25@example.com", "Client Age 25", LocalDate.now().minusYears(25));
+        Client client40 = new Client("client40@example.com", "Client Age 40", LocalDate.now().minusYears(40));
+        Client client50 = new Client("client50@example.com", "Client Age 50", LocalDate.now().minusYears(50));
+        clientRepository.save(client15);
+        clientRepository.save(client25);
+        clientRepository.save(client40);
+        clientRepository.save(client50);
+
         mockMvc.perform(get("/client/age-range"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$[0].id").value(client.getId()));
+                .andExpect(jsonPath("$.length()").value(2));
     }
 }
