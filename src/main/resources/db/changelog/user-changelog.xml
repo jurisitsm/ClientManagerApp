@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="createTable_user_20240419" author="jurisitsm">
+        <createTable tableName="app_user">
+            <column name="id" type="varchar(36)">
+                <constraints primaryKey="true" primaryKeyName="pk_user"/>
+            </column>
+            <column name="email" type="varchar(255)">
+                <constraints unique="true" uniqueConstraintName="uq_user_email"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+            <column name="password" type="varchar(255)"/>
+            <column name="account_expired" type="boolean" defaultValueBoolean="false"/>
+            <column name="credentials_expired" type="boolean" defaultValueBoolean="false"/>
+            <column name="locked" type="boolean" defaultValueBoolean="false"/>
+            <column name="enabled" type="boolean" defaultValueBoolean="true"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="seedTable_user_20240419" author="jurisitsm">
+        <loadData tableName="app_user" relativeToChangelogFile="true" file="../data/user.csv" separator=";"/>
+    </changeSet>
+
+</databaseChangeLog>

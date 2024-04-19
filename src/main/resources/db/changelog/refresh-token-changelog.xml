@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="createTable_refresh_token_20240419" author="jurisitsm">
+        <createTable tableName="refresh_token">
+            <column name="id" type="varchar(36)">
+                <constraints primaryKey="true" primaryKeyName="pk_refresh_token"/>
+            </column>
+            <column name="expiry_date" type="timestamp"/>
+            <column name="user_id" type="varchar(36)"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="refresh_token"
+                                 baseColumnNames="user_id"
+                                 constraintName="fk_refresh_token_user"
+                                 referencedTableName="app_user"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+</databaseChangeLog>
